@@ -28,12 +28,6 @@ test_size = len(full_dataset) - train_size
 
 train_dataset, test_dataset = random_split(full_dataset, [train_size, test_size])
 
-print(f"Nombre d'images dans le dataset complet : {len(full_dataset)}")
-print(f"Nombre d'images dans le dataset d'entraînement : {len(train_dataset)}")
-print(f"Nombre d'images dans le dataset de test : {len(test_dataset)}")
-
-print("Classes dans le dataset :", full_dataset.classes)
-
 
 #train
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
@@ -66,7 +60,7 @@ model = CNN()
 criterion = nn.CrossEntropyLoss()
 
 optimizer = optim.Adam(model.parameters(), lr=0.001)
-num_epochs = 10
+num_epochs = 15
 for epoch in range(num_epochs):
     model.train()
     running_loss = 0.0
