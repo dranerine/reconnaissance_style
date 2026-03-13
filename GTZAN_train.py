@@ -4,6 +4,8 @@ from torchvision import datasets, transforms
 from torch.utils.data import DataLoader, random_split
 import torch.nn as nn
 import torch.optim as optim
+from sklearn.metrics import confusion_matrix
+import numpy as np
 
 
 img_height = 288
@@ -54,7 +56,6 @@ class CNN(nn.Module):
         x = self.fc2(x)
         return x
     
-    
 model = CNN()
 
 criterion = nn.CrossEntropyLoss()
@@ -86,6 +87,29 @@ with torch.no_grad():
         total += labels.size(0)
         correct += (predicted == labels).sum().item()
 print(f"Accuracy on test set: {100 * correct / total:.2f}%")
+
+#matrice de confusion
+all_labels = []
+all_preds = []
+with torch.no_grad():
+    for images, labels in test_loader:
+        outputs = model(images)
+        _, predicted = torch.max(outputs.data, 1)
+        all_labels.extend(labels.cpu().numpy())
+        all_preds.extend(predicted.cpu().numpy())
+cm = confusion_matrix(all_labels, all_preds)
+plt.figure(figsize=(10, 8))
+plt.imshow(cm, interpolation='nearest', cmap=plt.cm.Blues)
+plt.title("Confusion Matrix")
+plt.colorbar()
+tick_marks = np.arange(10)
+plt.xticks(tick_marks, full_dataset.classes, rotation=45)
+plt.yticks(tick_marks, full_dataset.classes)
+plt.ylabel('True label')
+plt.xlabel('Predicted label')
+plt.tight_layout()
+plt.show()
+
 
 
 
